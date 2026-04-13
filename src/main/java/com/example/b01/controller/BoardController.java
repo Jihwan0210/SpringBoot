@@ -2,9 +2,11 @@ package com.example.b01.controller;
 
 
 import com.example.b01.dto.BoardDTO;
+import com.example.b01.dto.BoardListReplyCountDTO;
 import com.example.b01.dto.PageRequestDTO;
 import com.example.b01.dto.PageResponseDTO;
 import com.example.b01.service.BoardService;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -24,9 +26,13 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class BoardController {
     private final BoardService boardService;
 
+
+    @Operation
     @GetMapping("/list")
     public void list(PageRequestDTO pageRequestDTO, Model model){
-        PageResponseDTO<BoardDTO> responseDTO = boardService.list(pageRequestDTO);
+//        PageResponseDTO<BoardDTO> responseDTO = boardService.list(pageRequestDTO);
+        PageResponseDTO<BoardListReplyCountDTO> responseDTO =
+                boardService.listWithReplyCount(pageRequestDTO);
         log.info(responseDTO);
         model.addAttribute("responseDTO", responseDTO);
     }

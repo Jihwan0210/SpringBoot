@@ -1,6 +1,7 @@
 package com.example.b01.service;
 
 import com.example.b01.dto.BoardDTO;
+import com.example.b01.dto.BoardListReplyCountDTO;
 import com.example.b01.dto.PageRequestDTO;
 import com.example.b01.dto.PageResponseDTO;
 
@@ -11,4 +12,7 @@ public interface BoardService {
     void modify(BoardDTO boardDTO); //리다리엑트 하기떄문에 값 화면에 전달 X 그래서 void
     void remove(Long bno);
     PageResponseDTO<BoardDTO> list(PageRequestDTO pageRequestDTO);
+
+    //댓글의 숫자까지 처리
+    PageResponseDTO<BoardListReplyCountDTO> listWithReplyCount(PageRequestDTO pageRequestDTO);
 }
