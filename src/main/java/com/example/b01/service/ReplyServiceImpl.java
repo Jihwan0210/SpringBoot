@@ -50,6 +50,7 @@ public class ReplyServiceImpl implements ReplyService{
     }
     @Override
     public void remove(Long rno) {
+        Reply reply = replyRepository.findById(rno).orElseThrow();
         replyRepository.deleteById(rno);
     }
 
@@ -68,4 +69,6 @@ public class ReplyServiceImpl implements ReplyService{
                 .total((int) result.getTotalElements())
                 .build();
     }
+
+
 }

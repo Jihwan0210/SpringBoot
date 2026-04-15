@@ -62,10 +62,29 @@
             </div><!--end card-->
         </div><!-- end col-->
     </div><!-- end row-->
+<!--    reply-->
+    <div class="row mt-3">
+        <div class="col-md-12">
+            <div class="my-4">
+                <button class="btn btn-info addReplyBtn">ADD REPLY</button>
+            </div>
+            <ul class="list-group replyList">
+            </ul>
+        </div>
+    </div>
+    <div class="row mt-3">
+        <div class="col">
+            <ul calss="pagination replyPaging"></ul>
+        </div>
+    </div> <!-- end layout fragement -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="/js/reply.js"></script>
 </div>
 
 
 <script layout:fragment="script" th:inline="javascript">
+    const bno = [[${dto.bno}]]
+    get1(bno)
 
 
 
