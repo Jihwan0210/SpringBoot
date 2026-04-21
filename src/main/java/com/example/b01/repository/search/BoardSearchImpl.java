@@ -114,4 +114,26 @@ public class BoardSearchImpl extends QuerydslRepositorySupport implements BoardS
         //return null;
         return new PageImpl<>(dtoList, pageable, count);
         }
+
+    @Override
+    public Page<BoardListReplyCountDTO> searchWithAll(String[] types, String keyword, Pageable pageable) {
+
+            QBoard board = QBoard.board;
+            QReply reply = QReply.reply;
+            // Board 엔터티를 기준으로 JPQLQuery 생성
+            JPQLQuery<Board> boardJPQLQuery = from(board);
+            // Board와 Reply를 left join
+            boardJPQLQuery.leftJoin(reply).on(reply.board.eq(board));
+            //페이지네이션 적용
+            getQuerydsl().applyPagination(pageable, boardJPQLQuery);
+            //쿼리 실행하여 Board 리스트 가져오기
+        List<Board> boardList = boardJPQLQuery.fetch();
+        //가져온 Board 리스트의 각 요소 출력
+        boardList.forEach(board1 -> {
+            System.out.println(board1.getBno()); // 게시글 번호 출력
+            System.out.println(board1.getImageSet()); //이미지 정보 출력
+            System.out.println("--------------"); //구분선 출력
+        });
+        return null; //현재는 반환값이 없으므로 null 반환
+    }
 }
