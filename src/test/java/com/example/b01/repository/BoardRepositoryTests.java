@@ -4,6 +4,7 @@ package com.example.b01.repository;
 import com.example.b01.domain.Board;
 import com.example.b01.domain.Board;
 import com.example.b01.domain.Reply;
+import com.example.b01.dto.BoardListAllDTO;
 import com.example.b01.dto.BoardListReplyCountDTO;
 import jakarta.transaction.Transactional;
 import lombok.extern.log4j.Log4j2;
@@ -203,6 +204,11 @@ public class BoardRepositoryTests {
     @Test
     public void testSearchImageReplyCount() {
         Pageable pageable = PageRequest.of(0,10,Sort.by("bno").descending());
-        boardRepository.searchWithAll(null,null,pageable);
+//        boardRepository.searchWithAll(null,null,pageable);
+        Page<BoardListAllDTO> result
+                = boardRepository.searchWithAll(null,null,pageable);
+        log.info("------------------");
+        log.info(result.getTotalElements());
+        result.getContent().forEach(boardListAllDTO -> log.info(boardListAllDTO));
     }
 }

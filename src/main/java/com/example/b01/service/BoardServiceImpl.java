@@ -1,10 +1,7 @@
 package com.example.b01.service;
 
 import com.example.b01.domain.Board;
-import com.example.b01.dto.BoardDTO;
-import com.example.b01.dto.BoardListReplyCountDTO;
-import com.example.b01.dto.PageRequestDTO;
-import com.example.b01.dto.PageResponseDTO;
+import com.example.b01.dto.*;
 import com.example.b01.repository.BoardRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -29,16 +26,19 @@ public class BoardServiceImpl implements BoardService {
 
     @Override
     public Long register(BoardDTO boardDTO) {
-        Board board = modelMapper.map(boardDTO , Board.class);
+//        Board board = modelMapper.map(boardDTO , Board.class);
+        Board board = dtoToEntity(boardDTO);
         Long bno = boardRepository.save(board).getBno();
         return bno;
     }
 
     @Override
     public BoardDTO readOne(Long bno) {
-        Optional<Board> result = boardRepository.findById(bno); //값이 있을수도 없을수도 있어서 Optional
+//        Optional<Board> result = boardRepository.findById(bno); //값이 있을수도 없을수도 있어서 Optional
+        Optional<Board> result = boardRepository.findbyIdWithImages(bno);
         Board board = result.orElseThrow(); //값 없으면 에러던짐
-        BoardDTO boardDTO = modelMapper.map(board, BoardDTO.class); //화면용 객체 BoardDTO로 이동
+//        BoardDTO boardDTO = modelMapper.map(board, BoardDTO.class); //화면용 객체 BoardDTO로 이동
+        BoardDTO boardDTO = entityToDTO(board);
         return boardDTO;
     }
 
@@ -47,6 +47,17 @@ public class BoardServiceImpl implements BoardService {
         Optional<Board> result = boardRepository.findById(boardDTO.getBno());
         Board board = result.orElseThrow();
         board.change(boardDTO.getTitle(), boardDTO.getContent());
+        //기존 첨부 파일(이미지) 제거
+        board.clearImages();
+        //새로운 첨부 파일이 존재하는 경우 추가
+        if(boardDTO.getFileNames() != null) {
+            for(String fileName : boardDTO.getFileNames()) {
+                //파일명을 "_"기준으로 분리 (UUID, 실제 파일명)
+                String[] arr = fileName.split("_");
+                //게시글에 이미지 추가
+                board.addImage(arr[0], arr[1]);
+            }
+        }
         boardRepository.save(board);
     }
 
@@ -82,5 +93,26 @@ public class BoardServiceImpl implements BoardService {
                 .dtoList(result.getContent())
                 .total((int) result.getTotalElements())
                 .build();
+    }
+
+    @Override
+    public PageResponseDTO<BoardListAllDTO> listWithAll(PageRequestDTO pageRequestDTO) {
+        //검색 타입 배열 가져오기 (제목 ,내용 , 작성자 등)
+        String[] types = pageRequestDTO.getTypes();
+        //검색 키워드 가져오기
+        String keyword = pageRequestDTO.getKeyword();
+        //페이지 정보를 생성 ( 정렬 기준 : 게시글 번호 "bno")
+        Pageable pageable = pageRequestDTO.getPageable("bno");
+        //검색 조건과 페이지 정보를 이용하여 데이터 조회
+        Page<BoardListAllDTO> result = boardRepository.searchWithAll(types, keyword, pageable);
+        //조회 결과를 PageResponseDTO 객체로 변환하여 반환
+        return PageResponseDTO.<BoardListAllDTO>withAll()
+                .pageRequestDTO(pageRequestDTO) //요청 페이지 정보 설정
+                .dtoList(result.getContent()) //조회된 DTO 리스트 설정
+                .total((int) result.getTotalElements()) //전체 데이터 개수 설정
+                .build();
+
+//        return null;
+
     }
 }
