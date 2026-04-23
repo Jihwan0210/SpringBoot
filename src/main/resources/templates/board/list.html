@@ -51,9 +51,14 @@
                             <th scope="row">[[${dto.bno}]]</th>
                             <td>
                                 <!--                        [[${dto.title}]]-->
-                                <a th:href="|@{/board/read(bno = ${dto.bno})}&${link}|"> [[${dto.title}]]</a>
-                                <span class="badge progress-bar-success" style="background-color : #0a53be">
-                                    [[${dto.replyCount}]]</span>
+                                <!--                        <a th:href="|@{/board/read(bno =${dto.bno})}&${link}|"> [[${dto.title}]] </a>-->
+                                <!--                        <span class="badge progress-bar-success" style="background-color: #0a53be">[[${dto.replyCount}]]</span>-->
+                                <a th:href="|@{/board/read(bno =${dto.bno})}&${link}|" class="text-decoration-none"> [[${dto.title}]] </a>
+                                <span class="badge progress-bar-success" style="background-color: #0a53be">[[${dto.replyCount}]]</span>
+                                <div th:if="${dto.boardImages != null && dto.boardImages.size() > 0}">
+                                    <img style="width:100px" th:each="boarImage: ${dto.boardImages}"
+                                         th:src="|/view/s_${boarImage.uuid}_${boarImage.fileName}|">
+                                </div>
                             </td>
                             <td>[[${dto.writer}]]</td>
                             <!--                     <td>[[${dto.regDate}]]</td>-->
@@ -85,11 +90,11 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">게시글 등록 확인</h5>
+                    <h5 class="modal-title">게시물 등록 확인</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <p>게시물 등록이 완료되었습니다.</p>
+                    <p>게시물 등록이 완료 되었습니다.</p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -98,6 +103,7 @@
             </div>
         </div>
     </div>
+
 </div>
 
 
@@ -123,13 +129,13 @@
         self.location ='/board/list'
     },false)
 
-    // show modal
+    //show modal
     const result = [[${result}]]
-    // if (result){
-    //    alert(result)
+    // if(result){
+    //     alert(result)
     // }
     const modal = new bootstrap.Modal(document.querySelector(".modal"))
-    if (result){
+    if(result){
         modal.show()
     }
 </script>

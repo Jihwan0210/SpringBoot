@@ -1,10 +1,7 @@
 package com.example.b01.controller;
 
 
-import com.example.b01.dto.BoardDTO;
-import com.example.b01.dto.BoardListReplyCountDTO;
-import com.example.b01.dto.PageRequestDTO;
-import com.example.b01.dto.PageResponseDTO;
+import com.example.b01.dto.*;
 import com.example.b01.service.BoardService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
@@ -31,12 +28,13 @@ public class BoardController {
     @GetMapping("/list")
     public void list(PageRequestDTO pageRequestDTO, Model model){
 //        PageResponseDTO<BoardDTO> responseDTO = boardService.list(pageRequestDTO);
-        PageResponseDTO<BoardListReplyCountDTO> responseDTO =
-                boardService.listWithReplyCount(pageRequestDTO);
+//        PageResponseDTO<BoardListReplyCountDTO> responseDTO =
+//                boardService.listWithReplyCount(pageRequestDTO);
+
+        PageResponseDTO<BoardListAllDTO> responseDTO = boardService.listWithAll(pageRequestDTO);
         log.info(responseDTO);
         model.addAttribute("responseDTO", responseDTO);
     }
-
     @GetMapping("/register")
     public void registerGET() {
 
